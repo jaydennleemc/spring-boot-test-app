@@ -15,6 +15,9 @@ pipeline {
       }
     }
     stage('Test') {
+      when {
+        expression { return env.BRANCH_NAME == 'develop' }
+      }
       steps {
         echo 'Testing...'
       }
