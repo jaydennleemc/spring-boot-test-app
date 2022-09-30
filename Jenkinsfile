@@ -8,9 +8,6 @@ pipeline {
         sh './gradlew clean'
         echo 'Build project....'
         sh './gradlew build'
-
-        sh 'pwd'
-        sh 'ls -la'
       }
     }
     stage('Test') {
@@ -20,8 +17,11 @@ pipeline {
     }
     stage('Publish to JFrog Artifactory') {
       steps {
+        environment {
+          ACCESS_TOKEN = credentials('jfrog_access_token')
+        }
         echo 'Pushing to JFrog....'
-        sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token ${jfrog_access_token} build/libs/jfrog-spring-boot-0.0.1-SNAPSHOT.jar java-web-app/'
+        sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token ${ACCESS_TOKEN} build/libs/jfrog-spring-boot-0.0.1-SNAPSHOT.jar java-web-app/'
       }
     }
   }
