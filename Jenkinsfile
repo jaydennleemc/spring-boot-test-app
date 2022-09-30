@@ -4,7 +4,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Building...'
+        echo 'Clean project....'
+        sh './gradlew clean'
+        echo 'Build project....'
+        sh './gradlew build'
+
+        sh 'pwd'
+        sh 'ls -la'
       }
     }
     stage('Test') {
