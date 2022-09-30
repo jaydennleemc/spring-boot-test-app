@@ -18,9 +18,10 @@ pipeline {
         echo 'Testing...'
       }
     }
-    stage('Deploy') {
+    stage('Publish to JFrog Artifactory') {
       steps {
-        echo 'Deploying...'
+        echo 'Pushing to JFrog....'
+        sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token ${jfrog_access_token} build/libs/jfrog-spring-boot-0.0.1-SNAPSHOT.jar java-web-app/'
       }
     }
   }
