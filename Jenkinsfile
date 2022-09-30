@@ -28,20 +28,21 @@ pipeline {
         sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token $ACCESS_TOKEN $JAR_FILE $REPOSITORY_NAME'
       }
     }
-    post {
-      // always execute if all stages finished
-      always {
-        echo 'Cleaning up...'
-        sh './gradlew clean'
-      }
-      // execute if any stage success
-      success {
-        echo 'Build success'
-      }
-      // execute if any stage failed
-      failure {
-        echo 'Build failed'
-      }
+  }
+
+  post {
+    // always execute if all stages finished
+    always {
+      echo 'Cleaning up...'
+      sh './gradlew clean'
+    }
+    // execute if any stage success
+    success {
+      echo 'Build success'
+    }
+    // execute if any stage failed
+    failure {
+      echo 'Build failed'
     }
   }
 }
