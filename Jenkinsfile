@@ -2,6 +2,8 @@ pipeline {
   agent any
   environment {
     ACCESS_TOKEN = credentials('jfrog_access_token')
+    JAR_FILE = 'build/libs/jfrog-spring-boot-0.0.1-SNAPSHOT.jar'
+    REPOSITORY_NAME = 'java-web-app/'
   }
   stages {
     stage('Build') {
@@ -17,11 +19,10 @@ pipeline {
         echo 'Testing...'
       }
     }
-    stage('Publish to JFrog Artifactory') {
+    stage('Publish to JFrog artifactory') {
       steps {
-
-        echo 'Pushing to JFrog....'
-        sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token $ACCESS_TOKEN build/libs/jfrog-spring-boot-0.0.1-SNAPSHOT.jar java-web-app/'
+        echo 'Publish jar to jfrog artifactory...'
+        sh 'jf rt upload --url http://20.24.71.53:8082/artifactory --access-token $ACCESS_TOKEN $JAR_FILE $REPOSITORY_NAME'
       }
     }
   }
