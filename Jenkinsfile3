@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout source code') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: 'main', url: 'https://github.com/jaydennleemc/spring-boot-test-app.git'
+            }
+        }
+
+        stage("build") {
+            steps {
+                echo 'clean project...'
+                sh './gradlew clean'
+                echo 'build application'
+                sh './gradlew build'
+            }
+        }
+
+        stage("Server") {
+            steps {
+                rtServer (
+                    id: "Artifactory",
+                    url: "http://20.24.71.53:8082/artifactory",
+                    username: 'admin',
+                    password: 'Viseo2022!',
+                    bypassProxy: true,
+                    timeout: 300
+                )
+            }
+        }
+        stage("Upload Jar") {
+            steps {
+             rtUpload (
+                serverId: "Artifactory",
+                spec: '''{
+                    "files": [
+                        {
+                            "pattern": "*.jar",
+                            "target": "java-web-app"
+                        }
+                    ]
+                    }''',
+                )
+            }
+        }
+        stage("Upload build info") {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: "Artifactory"
+                )
+            }
+        }
+
+        stage('Xray Scan'){
+            steps {
+                xrayScan(
+                    serverId: 'Artifactory',
+                    failBuild: false
+                )
+            }
+        }
+    }
+}
