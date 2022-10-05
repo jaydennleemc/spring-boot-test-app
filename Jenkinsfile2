@@ -53,6 +53,15 @@ pipeline {
         stage('Publish'){
             steps {
                 script {
+                    def uploadReleaseArchiveSpec = """{
+                    "files": [
+                        {
+                             "pattern": "*.jar",
+                             "target": "java-web-app"
+                        }
+                    ]
+                    }"""
+                    rtServer.upload spec: uploadReleaseArchiveSpec, failNoOp: true
                     rtServer.publishBuildInfo buildInfo
                 }
             }
